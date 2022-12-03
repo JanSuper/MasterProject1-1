@@ -16,14 +16,22 @@ class CellType:
     def setCellType(self):
         # Extract from the matlab code and convert to python
         self.cellTypeDict[self.cluster_centers[:, 7].argmax()] = "Fibroblasts"
+        self.celustercenters = np.delete(self.cluster_centers, self.cluster_centers[:, 7].argmax(), axis = 0)
         self.cellTypeDict[self.cluster_centers[:, 13].argmax()] = "Epithelium"
+        self.celustercenters = np.delete(self.cluster_centers, self.cluster_centers[:, 13].argmax(), axis = 0)
         self.cellTypeDict[self.cluster_centers[:, 21].argmax()] = "Epithelium"
+        self.celustercenters = np.delete(self.cluster_centers, self.cluster_centers[:, 21].argmax(), axis = 0)
         self.cellTypeDict[self.cluster_centers[:, 14].argmax()] = "Bcells"
+        self.celustercenters = np.delete(self.cluster_centers, self.cluster_centers[:, 14].argmax(), axis = 0)
         self.cellTypeDict[self.cluster_centers[:, 19].argmax()] = "Monocytes"
+        self.celustercenters = np.delete(self.cluster_centers, self.cluster_centers[:, 19].argmax(), axis = 0)
         self.cellTypeDict[self.cluster_centers[:, 33].argmax()] = "Macrophages"
+        self.celustercenters = np.delete(self.cluster_centers, self.cluster_centers[:, 33].argmax(), axis = 0)
         tr = self.cluster_centers[:, 42] + self.cluster_centers[:, 7]
         self.cellTypeDict[tr.argmax()] = "IL17"
+        self.celustercenters = np.delete(self.cluster_centers, tr.argmax(), axis = 0)
         self.cellTypeDict[self.cluster_centers[:, 46].argmax()] = "T cells"
+        self.celustercenters = np.delete(self.cluster_centers, self.cluster_centers[:, 46].argmax(), axis = 0)
 
         lis = list()
         for i in range(len(self.cluster_centers)):
