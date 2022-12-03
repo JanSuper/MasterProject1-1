@@ -13,4 +13,4 @@ class CellType:
 
 
 if __name__ == "__main__":
-    print("yes")
+    print(len(CellType(None, None).cellType))
