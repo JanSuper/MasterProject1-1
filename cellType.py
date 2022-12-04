@@ -19,38 +19,38 @@ class CellType:
         # Extract from the matlab code and convert to python
         self.cellTypeDict = {}
         save = np.array(self.cluster_centers)
-        mask = np.ones(cluster_centers.shape[0])
+        mask = np.ones(self.cluster_centers.shape[0])
 
-        id = self.cluster_centers[:, 7].argmax()
+        id = np.where(mask == 1, self.cluster_centers[:, 7], -100).argmax()
         self.cellTypeDict[id] = "Fibroblasts"
         mask[id] = 0
 
-        id = self.cluster_centers[np.where(mask == 1, 1, 0), 13].argmax()
+        id = np.where(mask == 1, self.cluster_centers[:, 13], -100).argmax()
         self.cellTypeDict[id] = "Epithelium"
         mask[id] = 0
 
-        id = self.cluster_centers[np.where(mask == 1, 1, 0), 21].argmax()
+        id = np.where(mask == 1, self.cluster_centers[:, 21], -100).argmax()
         self.cellTypeDict[id] = "Epithelium"
         mask[id] = 0
 
-        id = self.cluster_centers[np.where(mask == 1, 1, 0), 14].argmax()
+        id = np.where(mask == 1, self.cluster_centers[:, 14], -100).argmax()
         self.cellTypeDict[id] = "Bcells"
         mask[id] = 0
 
-        id = self.cluster_centers[np.where(mask == 1, 1, 0), 19].argmax()
+        id = np.where(mask == 1, self.cluster_centers[:, 19], -100).argmax()
         self.cellTypeDict[id] = "Monocytes"
         mask[id] = 0
 
-        id = self.cluster_centers[np.where(mask == 1, 1, 0), 33].argmax()
+        id = np.where(mask == 1, self.cluster_centers[:, 33], -100).argmax()
         self.cellTypeDict[id] = "Macrophages"
         mask[id] = 0
         
-        tr = self.cluster_centers[np.where(mask == 1, 1, 0), 42] + self.cluster_centers[np.where(mask == 1, 1, 0), 7]
-        id = tr[np.where(mask == 1, 1, 0)].argmax()
+        tr = self.cluster_centers[:, 42] + self.cluster_centers[:, 7]
+        id = np.where(mask == 1, tr, -100).argmax()
         self.cellTypeDict[id] = "IL17"
         mask[id] = 0
 
-        id = self.cluster_centers[np.where(mask == 1, 1, 0), 46].argmax()
+        id = np.where(mask == 1, self.cluster_centers[:, 46], -100).argmax()
         self.cellTypeDict[id] = "T cells"
 
         lis = list()
@@ -59,7 +59,7 @@ class CellType:
                 lis.append(i)
 
         for i in lis:
-            self.cellTypeDict[i] = "Others"
+            self.cellTypeDict[i] = "unknown" + str(i)
         self.cluster_centers = save
                             
 if __name__ == "__main__":
@@ -71,5 +71,5 @@ if __name__ == "__main__":
     cellType = CellType(cluster_centers)
     cellType.setCellType()
     # dfn["pred"].apply(lambda x: cellType.cellType[x])
-    for i in range(15):
+    for i in range(16):
         print(cellType.cellTypeDict[i], i)
