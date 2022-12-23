@@ -57,19 +57,29 @@ class CellType:
         for i in range(len(self.cluster_centers)):
             if i not in self.cellTypeDict:
                 lis.append(i)
-
+        pairs = []
         for i in lis:
-            self.cellTypeDict[i] = "unknown" + str(i)
-        self.cluster_centers = save
+            # self.cellTypeDict[i] = "T cells"
+            min = -1
+            for y in self.cellTypeDict:                
+                dist = np.linalg.norm(i-y)
+                if min == -1 or dist < min:
+                    min = dist
+                    id = y
+            pairs.append((i, id))
+        for i in pairs:
+            self.cellTypeDict[i[0]] = self.cellTypeDict[i[1]]
+                    
                             
 if __name__ == "__main__":
+    n_cluster = 9
     with open("data/som.pkl", "rb") as f:
         som = pickle.load(f)
     cluster_centers = som.cluster_centers_
-    cluster_centers = cluster_centers.reshape(16, 56)
+    cluster_centers = cluster_centers.reshape(n_cluster, 56)
     print(cluster_centers.shape)
     cellType = CellType(cluster_centers)
     cellType.setCellType()
     # dfn["pred"].apply(lambda x: cellType.cellType[x])
-    for i in range(16):
+    for i in range(n_cluster):
         print(cellType.cellTypeDict[i], i)
