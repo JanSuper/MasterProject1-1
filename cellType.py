@@ -60,11 +60,11 @@ class CellType:
             self.df2.loc[mask, label] = 1    
         self.plotlabel = self.df2[self.labels]
 
-    def findLabel(self):
+    def findLabel(self, data : pd.DataFrame):
         if self.plotlabel is None:
             self.fixeClusterLabel()
         
-        # prediction = self.som.predict(data)
+        data["predictions"] = self.som.predict(np.array(data[self.col]))
 
         self.celltype = [[] for i in range(len(self.plotlabel.columns))]
         for i in range(len(self.plotlabel.columns)):
@@ -72,7 +72,18 @@ class CellType:
             index = self.plotlabel[tr].index
             self.celltype[i].extend(index)
         
-        self.diClusterToLabel = dict(zip(self.labels, self.celltype))
+        data["CellType"] = "Unlabelled"
+        for i in range(len(self.celltype)):
+            for y in self.celltype[i]:
+                mask = data['predictions'] == y
+                overide = data["CellType"][mask] != "Unlabelled"
+                if sum(overide) > 0:
+                    df_np = data[mask]["CellType"].values
+                    data["CellType"][mask] = [str(self.labels[i] + ", "+ z) for z in df_np]
+                else:
+                    data.loc[mask, "CellType"] = self.plotlabel.columns[i]
 
-                    
-    
+        data.drop('predictions', axis=1, inplace=True)
+        cellTypes = data["CellType"].values
+        data.drop('CellType', axis=1, inplace=True)
+        return cellTypes
